@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="style.css">
+     <link rel="stylesheet" href="../style.css">
     <title>technical questions</title>
 </head>
 <body>
@@ -15,8 +15,8 @@
     We are also building a platform that connects with multiple insurance providers, allowing users to compare policies and make purchases directly through the system.<br>
     Over time, I have grown both technically and professionally, and I now feel ready to take on bigger challenges. I am looking for a new opportunity where I can continue learning and contribute to solving real-world problems by building scalable and impactful backend systems.</p>
     <p class="question">Can you walk us through how you refactored a monolith to microservices?</p>
-    <p class="answer">In our previous application, we had a monolithic system that handled everything — managing users and their policies, integrating with multiple insurance providers to help users buy policies, sending notifications for various events, and securely storing documents uploaded by users.<br>
-    To improve scalability, maintainability, and development speed, we decided to break the monolith into microservices We used Domain-Driven Design (DDD) to identify clear boundaries between responsibilities and split the system into focused services: User Management, Policy Management, ISNP (Insurance Self Network Platform), Document Management, and Notification Service.<br>
+    <p class="answer">Our earlier application uses a monolithic system that takes care of everything. It manages users and their policies, connects with different insurance providers to help users buy policies, sends event-based notifications, and securely stores user-uploaded documents.<br>
+    To improve scalability, maintainability, and development speed, we decided to break the monolith into microservices We used Domain-Driven Design (DDD) to identify clear boundaries between responsibilities and split the system into focused services like: User Management, Policy Management, ISNP (Insurance Self Network Platform), Document Management, and Notification Service.<br>
     Once the services were defined, we built RESTful APIs for communication between them and documented everything using Swagger. Initially, all services still used the shared monolithic database, but we gradually migrated each service to its own database, allowing for true data ownership. For scenarios where services needed to access data from others, we used API calls.<br>
     We also introduced an API Gateway to handle request routing, authentication, and to provide a unified entry point into the system.<br>
     One of the biggest challenges was managing data consistency across services during multi-step operations. Since traditional database transactions don't work across microservices, we implemented the Saga pattern to coordinate these workflows and accepted eventual consistency where needed.<br>

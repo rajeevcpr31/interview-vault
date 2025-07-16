@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="../style.css">
+     <link rel="stylesheet" href="code-style.css">
+     <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/brown-paper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <title>String</title>
+</head>
+<body>
+    <p class="question">Removes the outermost parentheses</p>
+    <div class="container">
+        <pre class="code-block" style="margin: 0px;"><code class="language-java" style="border-radius: 10px;">
+public static String removeOuterParentheses(String input) {
+    
+    StringBuilder result = new StringBuilder();
+    int depth = 0;  // Tracks current level of nesting
+
+    for (char c : input.toCharArray()) {
+        
+        if (c == &#39;(&#39;) {
+            depth++; // Going deeper into nesting
+            if (depth &gt; 1) {
+                result.append(c); // Not the outermost &#39;(&#39;, so keep it
+            }
+        } else if (c == &#39;)&#39;) {
+            depth--; // Coming out of nesting
+            if (depth != 0) {
+                result.append(c);
+            }
+        }
+
+    }
+
+    return result.toString();
+}</code></pre>
+        <div class="code-block" style="margin: 0px;">
+            <p style="margin: 0px;">This method removes the outermost parentheses from each group of balanced parentheses in the input string. It uses a variable called <span class="code">depth</span> to keep track of how deep we are inside nested parentheses.<br>As we go through the string:</p>
+            <ul style="margin: 0px;">
+                <li>When we see <span class="code">&#39;(&#39;</span>, we increase the depth. If we are already inside (<span class="code">depth > 0</span>), we add it to the result because it's not the outermost opening bracket.</li>
+                <li>When we see <span class="code">&#39;)&#39;</span>, we first decrease the depth. If we are still inside (<span class="code">depth != 0</span>), we add it to the result because it's not the outermost closing bracket.</li>
+            </ul>
+            <p style="margin: 0px;">This way, we skip the first and last parentheses of every primitive group, effectively removing their outer layer.</p>
+            <p>We use <span class="code">StringBuilder</span> to build the result because it is much faster than using a regular String when repeatedly adding characters. Strings in Java are immutable, so every time you use <span class="code">+</span> with a String, a new object is created, which is slow and uses more memory. StringBuilder avoids this by modifying the existing object, making it more efficient.</p>
+            <p>We use <span class="code">StringBuilder</span> instead of <span class="code">StringBuffer</span> because we are not dealing with multiple threads here — StringBuilder is faster in single-threaded code since it doesn't have the overhead of thread safety.</p>
+            <p>The code goes through the string only once, so it works fast (O(n) time), and it doesn't use any extra space except for the result (O(n) space).</p>
+        </div>
+</div>
+<p class="question">Check if two strings have a common substring</p>
+<div class="container">
+    <pre class="code-block" style="margin-top: 5px 0px 0px 0px;"><code class="language-java" style="border-radius: 10px;">public static boolean checkCommonSubstring(String s1, String s2) {
+    Set&lt;Character&gt; set = new HashSet&lt;&gt;();
+
+    for (char c : s1.toCharArray()) {
+        set.add(c); // Store all characters of s1
+    }
+
+    for (char c : s2.toCharArray()) {
+        if (set.contains(c)) {
+            return true; // Common character found
+        }
+    }
+
+    return false; // No common character found
+}</code></pre>
+    <div class="code-block" style="margin: 0px;">
+        <p style="margin: 0px;">The method checkCommonSubstring determines whether two strings share at least one common character. It begins by creating a <span class="code">HashSet</span> to store all characters from the first string, s1. As it loops through each character in s1, it adds them to the set using the <span class="code">add()</span> method. After this, it iterates through each character in the second string, s2, and uses the <span class="code">contains()</span> method to check if the character exists in the set. If a common character is found, the method returns true immediately. If no match is found after checking the entire second string, it returns false.</p>
+        <p>In terms of performance, the <span class="code">add()</span> and <span class="code">contains()</span> methods of HashSet generally operate in constant time, <b style="font-size: 95%;">O(1)</b>, on average. This efficiency comes from the underlying hash table implementation, which allows for direct indexing based on the hash of the elements. However, in the worst-case scenario—when too many hash collisions occur—these operations can degrade to <b style="font-size: 95%;">O(n)</b> time. This happens when multiple elements are mapped to the same hash bucket, turning the underlying data structure for that bucket into a linked list or a balanced tree, depending on the Java version. Although such cases are rare due to good hashing strategies, it is still important to be aware that the worst-case performance of both add() and contains() is O(n).</p>
+    </div>
+</div>
+<p style="margin-top: 0px;">So, in typical situations, building the set from the first string takes <b style="font-size: 95%;">O(n)</b> time, and checking each character in the second string also takes <b style="font-size: 95%;">O(m)</b> time, leading to an average-case total time complexity of <b style="font-size: 95%;">O(n + m)</b>. But in the worst case, due to excessive collisions, the time complexity can degrade to <b style="font-size: 95%;">O(n × m)</b>. The space complexity remains <b style="font-size: 95%;">O(n)</b> since up to all characters of s1 may be stored in the set.</p>
+
+
+<script>
+        hljs.highlightAll(); 
+    </script>
+    <script>
+        function copyToClipboard() {
+          const text = document.getElementById("command").innerText;
+          navigator.clipboard.writeText(text).then(() => {
+            console.log("Copied!");
+          }).catch(err => {
+            console.error("Failed to copy: ", err);
+          });
+        }
+    </script>
+</body>
+</html>

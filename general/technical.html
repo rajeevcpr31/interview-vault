@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="../style.css">
+    <title>technical questions</title>
+</head>
+<body>
+    <p class="question">Introduce Yourself!</p>
+    <p class="answer">My name is Rajeev Kumar Singh, and I have completed my MCA from University of Hyderabad. During my post-graduation, I got the opportunity to intern at Techsophy Information Solutions and Based on my performance, I was offered a full-time role as a Backend Software Engineer.<br>
+    I have been working with the organization for over 3 years, mainly focused on backend development using Java and Spring Boot. I have experience building RESTful and GraphQL APIs, working in a microservices architecture, and following clean code practices. I have worked with databases like PostgreSQL and MongoDB, and I write well-tested code using JUnit and Mockito.<br>
+    As part of my project work, I have used AWS services like S3 for file storage, SNS for notifications, and SES for email communication. To build a deeper understanding, I also explored other services like EC2, Elastic Beanstalk, Lambda, and RDS through a small-scale setup outside of project work. <!--I have used Docker to support containerization in development workflows.--><br>
+    Currently, I am working on a project in the insurance domain. I have contributed to refactoring a monolithic application into microservices and upgraded backend services to <span class="code">Java 21</span> and <span class="code">Spring Boot 3.0</span>. I also developed an endorsement ticketing system to handle corrections in existing policies. In addition, I integrated the Razorpay payment gateway into a premium feature module and implemented webhooks for real-time payment validation.<br>
+    We are also building a platform that connects with multiple insurance providers, allowing users to compare policies and make purchases directly through the system.<br>
+    Over time, I have grown both technically and professionally, and now I feel ready to take on bigger challenges. I am looking for a new opportunity where I can continue learning and contribute to solving real-world problems by building scalable and impactful backend systems.</p>
+    <p class="question">Can you walk us through how you refactored a monolith to microservices?</p>
+    <p class="answer">Our earlier application uses a monolithic system that takes care of everything. It manages users and their policies, connects with different insurance providers to help users buy policies, sends event-based notifications, and securely stores user-uploaded documents.<br>
+    To improve scalability, maintainability, and development speed, we decided to break the monolith into microservices We used Domain-Driven Design (DDD) to identify clear boundaries between responsibilities and split the system into focused services like: User Management, Policy Management, ISNP (Insurance Self Network Platform), Document Management, and Notification Service.<br>
+    Once the services were defined, we built RESTful APIs for communication between them and documented everything using Swagger. Initially, all services still used the shared monolithic database, but we gradually migrated each service to its own database, allowing for true data ownership. For scenarios where services needed to access data from others, we used API calls.<br>
+    We also introduced an API Gateway to handle request routing, authentication, and to provide a unified entry point into the system.<br>
+    One of the biggest challenges was managing data consistency across services during multi-step operations. Since traditional database transactions don't work across microservices, we implemented the Saga pattern to coordinate these workflows and accepted eventual consistency where needed.<br>
+    Another important challenge was migrating to microservices without disrupting users. We used the Strangler pattern to gradually shift traffic from the monolith to the new services and applied feature flags to control the rollout safely.<br>
+    After moving to microservices, we saw major improvements. Deployments became faster and could be done independently. Each service scaled based on its own demand. Release-related downtime dropped significantly, and onboarding new developers became much easier due to the clear service boundaries.<br>
+    Overall, shifting to microservices made our system more agile, improved team autonomy, and enhanced the overall reliability of the platform.</p>
+    <p class="question" style="color: darkgreen;">Strangler Pattern</p>
+    <p class="answer" style="margin-bottom: 0px;">When you are migrating from a monolithic application to microservices, one of the biggest risks is breaking existing functionality for users. You can't afford to rewrite everything and switch overnight — that's too risky and often impractical. So, you need a way to gradually replace the monolith without impacting real users.<br>
+    The Strangler Pattern is a migration approach where:
+    <ul style="margin: 0px;">
+        <li>You build new functionality (or refactor existing functionality) in microservices.</li>
+        <li>You route only the relevant requests to the new service while the rest still go to the monolith.</li>
+        <li>Over time, as more features are moved out, the monolith is "strangled" and eventually eliminated.</li>
+    </ul></p>
+    <p class="answer">
+        How to implement it:
+    <ul style="margin: 0px;">
+        <li>Add an API Gateway: This will act as the single entry point for users and can route traffic based on paths or rules.</li>
+        <li>Refactor one feature at a time: For example, move <q>User Profile Management</q> to a new User-Management-Service.</li>
+        <li>Update the API Gateway to forward requests related to user profiles to the new service, while keeping the rest in the monolith.</li>
+        <li>Repeat the process for other features, such as policies, documents, notifications, etc.</li>
+        <li>Eventually, the monolith is reduced to nothing, and you're fully in microservices.</li>
+    </ul>
+    </p>
+    <p class="question" style="color: darkgreen;">Feature Flags</p>
+    <p class="answer">Feature Flags are switches in your code that allow you to turn new features on or off without deploying new code.<br>
+    How they help during migration:
+    <ul style="margin: 0px;">
+        <li>You can test a new microservice by enabling it only for internal users, QA, or a small group of real users (canary testing).</li>
+        <li>If something breaks, you can instantly switch back to the monolith by turning off the flag — no redeploy needed.</li>
+    </ul>
+    To implement it wrap calls to the new microservice inside a conditional check.</p>
+    <p class="question">What is SAGA Pattern</p>
+    <p class="answer">The Saga pattern is used to manage data consistency across multiple services in a microservices architecture. In such systems, each service typically manages its own database, which makes it impossible to use traditional database transactions that span across services — like we can in a monolith. The Saga pattern solves this by breaking a large operation into a sequence of smaller, local transactions, each handled by an individual service.<br>
+    There are two common ways to implement a Saga. The first is a <b>choreography-based Saga</b>, where services communicate by publishing and consuming events. There's no central controller — each service listens for specific events and decides what to do next. The second is an <b>orchestration-based Saga</b>, which uses a central coordinator — known as the orchestrator — to control the entire flow. It tells each service what to do, waits for the response, and determines the next step based on the result.<br>
+    In my current insurance platform, we adopted the orchestration-based Saga pattern to manage the policy purchase workflow, which spans several services — including user validation, policy creation, integration with external insurers, document storage, and user notifications. Since each service is independent and owns its own database, we could not wrap the whole flow in a single transaction. Instead, we built a Saga Orchestrator to coordinate the process from start to finish.<br>
+    When a user initiates a policy purchase, the orchestrator first calls the User Service to validate the user. If the user is valid, it proceeds to the Policy Service to create a policy in a pending state. Next, it contacts the ISNP Service, which integrates with an external insurer to issue the policy. If the issuance is successful, the orchestrator retrieves the policy document and stores it securely through the Document Service. Finally, it updates the policy status to active and triggers the Notification Service to inform the user via email or SMS.<br>
+    We handle failures using different strategies, depending on where the failure occurs. For example, if the insurer rejects the issuance request, the orchestrator marks the policy as failed and notifies the user. That's a typical compensating action, where a previously completed step (policy creation) is rolled back or adjusted. However, some steps ca not be reversed. For instance, if the document storage fails after the policy has already been issued, we can not undo the issuance. In such cases, we use a retry mechanism to attempt storing the document multiple times. If all retries fail, we send an alert to our support team with relevant policy and user details so they can manually investigate and resolve the issue.
+    <p class="question">How do you ensure your code is maintainable and testable?</p>
+    <p class="answer">To make sure my code is maintainable and testable, I follow the SOLID design principles. This helps me write code that's modular, easy to understand, and flexible to change.I break down complex logic into smaller, focused units so that each function or class has a single responsibility. I also avoid duplication and use meaningful names, which makes the code more readable and easier to work with.<br> 
+    I write unit tests to validate the behavior of individual components and ensure they continue to work when the code changes. I also use CI pipelines to automatically run tests and catch issues early.</p>
+    <p class="question">What do you mean by clean code? Can you give an example?</p>
+    <p class="answer">Clean code means writing code that is easy to read, understand, and maintain. It should be simple enough that any developer can quickly grasp what it does without needing a lot of explanation.<br>
+    For example, instead of putting everything in one big method, I break the logic into smaller, focused methods — like <span class="code">validateUser()</span>, <span class="code">createPolicy()</span>, or <span class="code">sendNotification()</span>. I use meaningful names and keep each class or method responsible for just one thing. This helps avoid confusion and makes the code easier to change or test later.<br>
+    I follow SOLID design principles and organize code into clear layers — controller, service, and repository. This structure makes the application easier to scale and debug.</p>
+    <p class="question">What challenges did you face when upgrading to Java21 or Spring Boot 3.0?</p>
+    <p class="answer">When we upgraded to Java21 and Spring Boot 3.0, one of the first challenges was ensuring compatibility. Since Spring Boot 3.0 requires Java 17 or above, we had to make sure all our dependencies supported the newer Java version. Some third-party libraries needed updates, and we also had to refactor parts of our code that used deprecated features.<br>
+    A major shift was the migration from <span class="code">javax.*</span> to <span class="code">jakarta.*</span> namespaces in Spring Boot 3.0, due to the move to Jakarta EE 9. This required us to update import statements across the codebase, especially in JPA entities, filters, and servlets.<br>
+    Spring Security also introduced changes. The old <span class="code">WebSecurityConfigurerAdapter</span> approach was removed, so we moved to the new lambda-based configuration using the <span class="code">SecurityFilterChain</span> bean. It took some effort to refactor the security setup, but the result was cleaner and more flexible.</p>
+    <p class="question">What's the difference between REST and GraphQL, and where did you use each?</p>
+    <p class="answer">REST is based on fixed endpoints, where each endpoint represents a specific resource. For example, to get user data, we call <span class="code">/users</span>, and to get policy data, we call <span class="code">/policies</span>. The response format is predefined, which sometimes means getting more data than needed or making multiple calls to gather related information. I used REST in most of our backend services like User Management and Notification Service, where the data structure was simple and did not change much.<br> 
+    GraphQL, on the other hand, is more flexible. The client can request exactly the data it needs, even if that data comes from multiple sources. Instead of hitting multiple endpoints, you make a single request and get a custom response shaped exactly as needed. I used GraphQL in areas where the frontend required more control, like showing both user and policy details together on a single screen.</p>
+    <p class="question">Which AWS service have you used and for what purpose?</p>
+    <p class="answer">In our project, we mainly used a few AWS services to handle document storage and user notifications effectively.<br>
+    We used Amazon S3 to securely store policy documents and user-uploaded files. After a policy was issued, the document was uploaded to an S3 bucket, and we saved its reference (like the file path or key) in our database for easy access later.<br>
+    For notifications, we used Amazon SNS to send SMS and Amazon SES to send emails. These were used for things like policy confirmations, failure alerts, and other important updates to users.<br>
+    Besides these, I have also explored services like EC2, Elastic Beanstalk, Lambda, and RDS to understand how they support application deployment, scaling, and database management. This exploration helped me get a broader view of how AWS can support modern backend systems.</p>
+    <p class="question">Tell me about a time you worked in an Agile setup — what was your role in a sprint?</p>
+    <p class="answer">In my current project, we follow Agile with two-week sprints. As a backend developer, I actively participate in sprint planning, where we review user stories and break them down into smaller, manageable tasks. I also give input on estimates based on complexity and effort.<br>
+    Once the sprint begins, I pick up tasks from the board — usually focused on building or updating REST and GraphQL APIs, writing business logic, or integrating with other services. I make sure the code follows clean code practices and SOLID principles, and I write unit tests using JUnit and Mockito to ensure everything works as expected.<br>
+    We have daily stand-ups where I share progress, plans, and any blockers. I work closely with frontend developers and QA to ensure the feature meets requirements and functions correctly end-to-end.<br>
+    At the end of the sprint, I participate in sprint reviews to demo my work, and in retrospectives to discuss what went well and how we can improve. My focus is always on delivering clean, maintainable, and reliable backend code that aligns with sprint goals.</p>
+    <p class="question">Circuit Breaker Pattern</p>
+    <p class="answer">The Circuit Breaker pattern helps protect our system from repeatedly calling a failing service. If a service is down or responding slowly, the circuit breaker temporarily stops further calls. This prevents additional load on the failing service and keeps our application responsive.<br>
+    For example, In my project, we used this pattern when calling third-party insurance APIs. We wrapped those calls with a circuit breaker using Resilience4j. If the API failed multiple times, the circuit would <q>open</q> and trigger a fallback response instead of continuing to call the failing service. After a set wait time, it would automatically try the API again to check if we are getting a success response.<br>
+    To implement it:
+    <ol style="margin: 0px;">
+        <li>We have to add the Resilience4j dependency in the project.</li>
+        <li>Use the <span class="code">@CircuitBreaker</span> annotation on the method making the API call, providing the name and fallbackMethod attributes.</li>
+        <li>Create a fallback method to handle the response when the main call fails.</li>
+        <li>Configured the circuit breaker settings in <span class="code">application.yaml</span>, such as the failure threshold and wait duration before retrying.</li>
+    </ol>
+    This setup helped our system remain stable even when external services were temporarily unavailable. It also gave us the flexibility to define meaningful fallback responses, improving the user experience. Overall, using the Circuit Breaker pattern with Resilience4j made our application more reliable and fault-tolerant.</p>
+    <p class="question">SOLID Principle</p>
+    <p class="answer">SOLID is a group of five design principles that help us write clean, maintainable, and testable code.
+    <ol style="margin: 0px;">
+        <li><b style="font-size: 95%;">S — Single Responsibility Principle:</b> This principle means that a class should have only one responsibility or one reason to change. For example, in a Spring Boot project, our <span class="code">UserController</span> should only handle incoming HTTP requests, the <span class="code">UserService</span> should contain business logic, and the <span class="code">UserRepository</span> should handle database operations. Keeping responsibilities separate makes the code easier to understand and maintain.</li>
+        <li><b style="font-size: 95%;">O — Open/Closed Principle:</b> A class should be open for extension but closed for modification. For example, suppose we have a <span class="code">PaymentProcessor</span> class that handles credit card payments Later, if we want to support PayPal, instead of modifying the existing class, we can create a new class <span class="code">PayPalPaymentProcessor</span> that extends the behavior. This way, we add new functionality without changing the existing, working code—reducing the chance of introducing bugs.</li>
+        <li><b style="font-size: 95%;">L — Liskov Substitution Principle:</b> objects of a superclass should be replaceable with objects of its subclasses without breaking the program. For example, if we have a <span class="code">Rectangle</span> class and we create a <span class="code">Square</span> class by extending it, but we override the height and width logic to always keep them equal, it might break the behavior that expects rectangles to work independently.<br>
+        To follow this principle, <span class="code">Square</span> should not inherit from <span class="code">Rectangle</span> if it changes the expected behavior. Instead, we can create a common interface like <span class="code">Shape</span> that both Rectangle and Square implement separately, with their own logic.</li>
+        <li><b style="font-size: 90%;">I — Interface Segregation Principle:</b> This principle says that a class should not be forced to implement methods it does not use. For instance, if we have a <span class="code">Bird</span> interface with a <span class="code">fly()</span> method, and a <span class="code">Penguin</span> class implements it, we will be forced to implement <span class="code">fly()</span>, even though penguins can't fly. This violates the principle. <br>
+        To fix this, we can split the interface into smaller, more specific ones, like <span class="code">FlyableBird</span> and <span class="code">NonFlyableBird</span>, so each class implements only what it actually needs.</li>
+        <li><b style="font-size: 90%;">D — Dependency Inversion Principle:</b> High-level modules should not depend on low-level modules. Both should depend on abstractions. For example, suppose there is a class called <span class="code">ReportGenerator</span>. It should not directly depend on specific classes like <span class="code">PDFExporter</span> or <span class="code">ExcelExporter</span>. Instead, it should depend on an interface, let's say <span class="code">Exporter</span>. The <span class="code">PDFExporter</span> and <span class="code">ExcelExporter</span> classes can implement this interface.<br>
+        Now, the <span class="code">ReportGenerator</span> only depends on the <span class="code">Exporter</span> interface, not on any specific implementation. This makes the code more flexible, loosely coupled, and easier to maintain, as new exporters can be added without changing the <span class="code">ReportGenerator</span> class.</li>
+    </ol>
+</p>
+</body>
+</html>

@@ -2,11 +2,10 @@ body {
     margin: 15px 30px;
 }
 .question {
-    color: blue;
+    color: #2568b0;
     font-weight: bold;
-    font-family: Verdana;
+    font-family: Georgia;
     text-align: justify;
-    font-size: 90%;
     margin: 10px 0px 0px 0px;
 }
 

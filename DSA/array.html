@@ -12,8 +12,9 @@
 </head>
 <body>
     <p class="question">Shift all zeros to right side of array</p>
-    <div class="container">
-        <pre class="code-block" style="margin: 0px;"><code class="language-java" style="border-radius: 10px;">public static void shiftZeros(int[] numbers) {
+     <p style="margin: 5px 0px 0px 0px;">We use a simple <b style="font-size: 95%;">two-pointer strategy</b> to move all non-zero elements to the beginning of the array. One pointer (insertPos) keeps track of the position where the next non-zero element should go, while the other pointer goes through each element in the array.</p>
+     <p style="margin-bottom: 2px;">Whenever we find a non-zero value, we place it at the insertPos location and move insertPos forward. After this first pass, we fill the remaining positions in the array with zeros. This approach keeps the order of non-zero elements unchanged and pushes all zeros to the end.</p>
+     <pre style="margin: 0px;"><code class="language-java" style="border-radius: 10px;">public static void shiftZeros(int[] numbers) {
     int insertPos = 0;
 
     // Move all non-zero elements to the front
@@ -28,12 +29,7 @@
         numbers[insertPos++] = 0;
     }
 }</code></pre>
-        <div class="code-block" style="margin: 0px;">
-            <p style="margin: 5px 0px 0px 0px;">We use a simple <b style="font-size: 95%;">two-pointer strategy</b> to move all non-zero elements to the beginning of the array. One pointer (insertPos) keeps track of the position where the next non-zero element should go, while the other pointer goes through each element in the array.</p>
-            <p>Whenever we find a non-zero value, we place it at the insertPos location and move insertPos forward. After this first pass, we fill the remaining positions in the array with zeros. This approach keeps the order of non-zero elements unchanged and pushes all zeros to the end.</p>
-            <p>The method works directly on the input array without using extra space, so the space complexity is O(1), and since we visit each element only once, the time complexity is O(n). The two-pointer strategy used here is helpful in many problems where elements need to be shifted or rearranged based on certain conditions.</p>
-        </div>
-</div>
+<p style="margin-top: 2px;">The method works directly on the input array without using extra space, so the space complexity is <b style="font-size: 95%;">O(1)</b>, and since we visit each element only once, the time complexity is <b style="font-size: 95%;">O(n)</b>. The two-pointer strategy used here is helpful in many problems where elements need to be shifted or rearranged based on certain conditions.</p>
 <script>
         hljs.highlightAll(); 
     </script>

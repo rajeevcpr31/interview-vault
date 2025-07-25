@@ -74,7 +74,42 @@ assert checkCommonSubstring("123", "456") == false;
 assert checkCommonSubstring("abc", "xyz") == false;</code></pre>
         <p style="margin-top: 2px; margin-bottom: 5px;">In terms of performance, the <span class="code">add()</span> and <span class="code">contains()</span> methods of HashSet generally operate in constant time, <b style="font-size: 95%;">O(1)</b>, on average. This efficiency comes from the underlying hash table implementation, which allows for direct indexing based on the hash of the elements. However, in the worst-case scenario—when too many hash collisions occur—these operations can degrade to <b style="font-size: 95%;">O(n)</b> time. This happens when multiple elements are mapped to the same hash bucket, turning the underlying data structure for that bucket into a linked list or a balanced tree, depending on the Java version. Although such cases are rare due to good hashing strategies, it is still important to be aware that the worst-case performance of both add() and contains() is O(n).</p>
         <p style="margin-top: 0px;">So, in typical situations, building the set from the first string takes <b style="font-size: 95%;">O(n)</b> time, and checking each character in the second string also takes <b style="font-size: 95%;">O(m)</b> time, leading to an average-case total time complexity of <b style="font-size: 95%;">O(n + m)</b>. But in the worst case, due to excessive collisions, the time complexity can degrade to <b style="font-size: 95%;">O(n × m)</b>. The space complexity remains <b style="font-size: 95%;">O(n)</b> since up to all characters of s1 may be stored in the set.</p>
+        <br>
+        <p class="question">Find the First Non-Repeated Character in a String.</p>
+        <p style="margin: 5px 0px 0px 0px;">To approach this, I first iterate over the characters of the string and track their frequency using a <span class="code" style="background-color: #e4e4e4;">LinkedHashMap</span>, which preserves the order in which characters appear. While inserting each character, I use the merge method to simplify the logic: if the character is already present, its count is incremented; otherwise, it is added with an initial count of 1. After building the frequency map, I stream through its entries to find the first character whose count is 1. Since the map maintains insertion order, this guarantees the first non-repeating character is selected correctly.</p>
+        <pre><code class="language-java" style="border-radius: 10px;">public static Character getNonRepeatingChar(String input) {
+    Map&lt;Character, Integer&gt; frequencyMap = new LinkedHashMap&lt;&gt;();
 
+    for (char c : input.toCharArray()) {
+        frequencyMap.merge(c, 1, (oldValue, newValue) -&gt; oldValue + newValue);
+    }
+
+    return frequencyMap.entrySet()
+            .stream()
+            .filter(entrySet -&gt; entrySet.getValue() == 1)
+            .map(entrySet -&gt; entrySet.getKey())
+            .findFirst().orElse(null);
+}
+
+    * * * * * * Tests * * * * * *
+getNonRepeatingChar("aabbcddde") // → 'c'
+getNonRepeatingChar("aee")       // → 'a'
+</code></pre>
+<p style="margin-top: 0px;">The time complexity of this approach is <b style="font-size: 95%;">O(n)</b>, where <q>n</q> is the length of the input string. This comes from two passes over the input — one to build the map and another to scan for the result. The space complexity is <b style="font-size: 95%;">O(k)</b>, where <q>k</q> is the number of unique characters. In the worst case, k can be up to 26 for lowercase English letters, or 128/256 for full ASCII.</p>
+<p style="margin-bottom: 0px;">If the input is constrained to lowercase English letters only, I optimize further by replacing the map with a fixed-size integer array of size 26. Each character's frequency is updated using its offset from 'a' as the index. This eliminates the overhead of object allocation and hashing. After populating the array, I again iterate over the string to find the first character with frequency 1. Here's the optimized version:</p>
+<pre><code class="language-java" style="border-radius: 10px;">public static Character getNonRepeatingChar(String input) {
+    int[] freq = new int[26];
+    for (char c : input.toCharArray()) {
+        freq[c - &#39;a&#39;]++;
+    }
+    for (char c : input.toCharArray()) {
+        if (freq[c - &#39;a&#39;] == 1) {
+            return c;
+        }
+    }
+    return null;
+}</code></pre>
+<p style="margin-top: 0px;">This version still has <b style="font-size: 95%;">O(n)</b> time complexity but reduces the space complexity to <b style="font-size: 95%;">O(1)</b>, since the array size is constant and independent of input length. This is the preferred approach when character constraints are known and tight.</p>
 
 <script>
         hljs.highlightAll(); 

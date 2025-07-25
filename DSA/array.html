@@ -11,6 +11,84 @@
     <title>Array</title>
 </head>
 <body>
+     <p class="question">Find second largest number in a given array</p>
+      <p style="margin: 5px 0px 0px 0px;">First, we check if the array has less than two elements. If it does, there can't be a second largest number, so we return <span class="code" style="font-size: 110%; background-color: #e4e4e4;">null</span>. Next, we create two variables: <span class="code" style="font-size: 110%; background-color: #e4e4e4;">largest</span> and <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondLargest</span>, and set them to <span class="code" style="font-size: 110%; background-color: #e4e4e4;">null</span>. Then we go through each number in the array one by one. If the current number is greater than <span class="code" style="font-size: 110%; background-color: #e4e4e4;">largest</span>, we update <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondLargest</span> to hold the old value of <span class="code" style="font-size: 110%; background-color: #e4e4e4;">largest</span>, and then set <span class="code" style="font-size: 110%; background-color: #e4e4e4;">largest</span> to the current number. If the current number is not equal to <span class="code" style="font-size: 110%; background-color: #e4e4e4;">largest</span> but is greater than <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondLargest</span> (or if <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondLargest</span> is still <span class="code" style="font-size: 110%; background-color: #e4e4e4;">null</span>), we update <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondLargest</span> with the current number.</p>
+      <p style="margin-bottom: 0px;">At the end, we return <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondLargest</span>. If all numbers were the same or there was no second largest value, it will return <span class="code" style="font-size: 110%; background-color: #e4e4e4;">null</span>.</p>
+      <pre><code class="language-java" style="border-radius: 10px;">public static Integer secondLargest(int[] numbers) {
+    // Handle null or too-small arrays (need at least 2 elements)
+    if (numbers == null || numbers.length &lt; 2) {
+        return null;
+    }
+
+    // Use boxed types to allow null initialization (undefined state)
+    Integer largest = null;
+    Integer secondLargest = null;
+
+    for (int num : numbers) {
+        // Case 1: New largest found; shift current largest to secondLargest
+        if (largest == null || num &gt; largest) {
+            secondLargest = largest;
+            largest = num;
+        }
+        // Case 2: num is between largest and secondLargest
+        else if (num != largest &amp;&amp; (secondLargest == null || num &gt; secondLargest)) {
+            secondLargest = num;
+        }
+        // Other cases: num is duplicate or less than current secondLargest – ignore
+    }
+
+    // If secondLargest is still null, no valid second-largest value exists
+    return secondLargest;
+}
+
+        * * * * * * Suggested Unit Tests * * * * * *
+assert secondLargest(new int[]{1, 2, 3}) == 2;
+assert secondLargest(new int[]{5, 5, 5}) == null;
+assert secondLargest(new int[]{9}) == null;
+assert secondLargest(new int[]{-1, -2, -3}) == -2;
+assert secondLargest(new int[]{Integer.MIN_VALUE, Integer.MIN_VALUE + 1}) == Integer.MIN_VALUE;</code></pre>
+    <p>This method runs in <b style="font-size: 95%;">O(n)</b> time, where <q>n</q> is the number of elements in the array, since it only makes a single pass through the array. The space complexity is <b style="font-size: 95%;">O(1)</b> because it uses only a constant amount of extra memory regardless of the input size.</p>
+<br>
+    <p class="question">Find second smallest number in a given array</p>
+     <p style="margin: 5px 0px 0px 0px;">First, we check if the array has less than two elements. If it does, there's no second smallest number, so we return <span class="code" style="font-size: 110%; background-color: #e4e4e4;">null</span>. We create two variables: <span class="code" style="font-size: 110%; background-color: #e4e4e4;">smallest</span> and <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondSmallest</span>, and initialize them to <span class="code" style="font-size: 110%; background-color: #e4e4e4;">null</span>. Then we go through each number in the array.</p>
+     <p>If the current number is smaller than <span class="code" style="font-size: 110%; background-color: #e4e4e4;">smallest</span>, we move the current smallest value into <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondSmallest</span>, and update <span class="code" style="font-size: 110%; background-color: #e4e4e4;">smallest</span> with the current number. If the current number is not equal to <span class="code" style="font-size: 110%; background-color: #e4e4e4;">smallest</span> but is smaller than <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondSmallest</span> (or if <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondSmallest</span> is still <span class="code" style="font-size: 110%; background-color: #e4e4e4;">null</span>), we set <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondSmallest</span> to the current number.</p>
+     <p>Finally, we return <span class="code" style="font-size: 110%; background-color: #e4e4e4;">secondSmallest</span>. If there's no valid second smallest value (like all elements are equal), the method returns <span class="code" style="font-size: 110%; background-color: #e4e4e4;">null</span>.</p>
+     <pre><code class="language-java" style="border-radius: 10px;">public static Integer secondSmallest(int[] numbers) {
+    // Check for null or too few elements
+    if (numbers == null || numbers.length &lt; 2) {
+        return null;
+    }
+
+    // Initialize variables to track smallest and second-smallest values
+    Integer smallest = null;
+    Integer secondSmallest = null;
+
+    // Iterate through each number in the array
+    for (int num : numbers) {
+        // If we find a new smallest, update both smallest and secondSmallest
+        if (smallest == null || num &lt; smallest) {
+            secondSmallest = smallest;
+            smallest = num;
+        }
+        // If current number is greater than smallest but smaller than secondSmallest
+        else if (num != smallest &amp;&amp; (secondSmallest == null || num &lt; secondSmallest)) {
+            secondSmallest = num;
+        }
+    }
+
+    // Return null if no valid second smallest found (e.g., all numbers are equal)
+    return secondSmallest;
+}
+
+        * * * * * * Suggested Unit Tests * * * * * *
+assert secondSmallest(new int[]{3, 2, 1}) == 2;
+assert secondSmallest(new int[]{5, 5, 5}) == null;
+assert secondSmallest(new int[]{9}) == null;
+assert secondSmallest(new int[]{-3, -2, -1}) == -2;
+assert secondSmallest(new int[]{Integer.MIN_VALUE + 1, Integer.MIN_VALUE}) == Integer.MIN_VALUE + 1;</code></pre>
+<p>This method has a time complexity of <b style="font-size: 95%;">O(n)</b>, where <q>n</q> is the length of the array, because it makes only a single pass through the elements. The space complexity is <b style="font-size: 95%;">O(1)</b> since it uses a fixed number of variables and does not allocate any extra memory that grows with input size.</p>
+
+<br>
     <p class="question">Shift all zeros to right side of array</p>
      <p style="margin: 5px 0px 0px 0px;">We use a simple <b style="font-size: 95%;">two-pointer strategy</b> to move all non-zero elements to the beginning of the array. One pointer (insertPos) keeps track of the position where the next non-zero element should go, while the other pointer goes through each element in the array.</p>
      <p style="margin-bottom: 2px;">Whenever we find a non-zero value, we place it at the insertPos location and move insertPos forward. After this first pass, we fill the remaining positions in the array with zeros. This approach keeps the order of non-zero elements unchanged and pushes all zeros to the end.</p>
@@ -28,8 +106,45 @@
     while (insertPos &lt; numbers.length) {
         numbers[insertPos++] = 0;
     }
-}</code></pre>
+}
+
+        * * * * * * Suggested Unit Tests * * * * * *
+int[] a1 = {1, 0, 2, 0, 3};
+shiftZeros(a1);
+assert Arrays.equals(a1, new int[]{1, 2, 3, 0, 0});</code></pre>
 <p style="margin-top: 2px;">The method works directly on the input array without using extra space, so the space complexity is <b style="font-size: 95%;">O(1)</b>, and since we visit each element only once, the time complexity is <b style="font-size: 95%;">O(n)</b>. The two-pointer strategy used here is helpful in many problems where elements need to be shifted or rearranged based on certain conditions.</p>
+<br>
+     <p class="question">Remove Duplicates from sorted array</p>
+     <p style="margin: 5px 0px 0px 0px;">We use a pointer called <span class="code" style="background-color: #e4e4e4;">writeIndex</span> to keep track of the position where the next unique element should be placed. Since the input array is sorted, all duplicate elements will be grouped together. So, starting the loop from index <span class="code" style="background-color: #e4e4e4;">1</span>, we compare each element with the last unique value found (at <span class="code" style="background-color: #e4e4e4;">writeIndex</span>). If the current element is different, it means it's a new unique value—we increment <span class="code" style="background-color: #e4e4e4;">writeIndex</span> and store this new value at that position.</p>
+     <p>Because <span class="code" style="background-color: #e4e4e4;">writeIndex</span> starts at 0, the total number of unique elements will be <span class="code" style="background-color: #e4e4e4;">writeIndex + 1</span>, which we return at the end.</p>
+     <p style="margin: 0px;">The time complexity is <b style="font-size: 95%;">O(n)</b> since we iterate over the array once, and the space complexity is <b style="font-size: 95%;">O(1)</b> because we use only a constant amount of extra memory.</p>
+     <pre><code class="language-java" style="border-radius: 10px;">public static int removeDuplicate(int[] numbers) {
+    if (numbers == null || numbers.length == 0) {
+        return 0; // Handle empty array safely
+    }
+
+    int writeIndex = 0; // Points to the last unique element
+
+    // Start from second element since first is always unique
+    for (int i = 1; i &lt; numbers.length; i++) {
+        if (numbers[i] != numbers[writeIndex]) {
+            writeIndex++;
+            numbers[writeIndex] = numbers[i]; // Move the new unique value forward
+        }
+    }
+
+    return writeIndex + 1; // Total count of unique elements
+}
+
+    * * * * * * Suggested Unit Tests * * * * * *
+int[] a1 = {1, 1, 2};                   // → [1, 2]
+assert removeDuplicate(a1) == 2;
+
+int[] a2 = {0, 0, 1, 1, 1, 2, 2, 3};    // → [0, 1, 2, 3]
+assert removeDuplicate(a2) == 4;
+</code></pre>
+
+
 <script>
         hljs.highlightAll(); 
     </script>

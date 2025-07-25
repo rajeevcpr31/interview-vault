@@ -40,7 +40,12 @@
     }
 
     return result.toString();
-}</code></pre>
+}
+
+     * * * * * * Suggested Unit Tests * * * * * *
+assert removeOuterParentheses("(()())(())").equals("()()()");
+assert removeOuterParentheses("()()").equals("");
+assert removeOuterParentheses("((()()))").equals("(()())");</code></pre>
     <p style="margin-top: 2px; margin-bottom: 5px;">We use <span class="code">StringBuilder</span> to build the result because it is much faster than using a regular String when repeatedly adding characters. Strings in Java are immutable, so every time you use <span class="code">+</span> with a String, a new object is created, which is slow and uses more memory. StringBuilder avoids this by modifying the existing object, making it more efficient.</p>
     <p style="margin: 0px;">We use <span class="code">StringBuilder</span> instead of <span class="code">StringBuffer</span> because we are not dealing with multiple threads here — StringBuilder is faster in single-threaded code since it doesn't have the overhead of thread safety.</p>
     <p style="margin-top: 5px; margin-bottom: 0px;">The code goes through the string only once, so it works fast (O(n) time), and it doesn't use any extra space except for the result (O(n) space).</p>
@@ -61,7 +66,12 @@
     }
 
     return false; // No common character found
-}</code></pre>
+}
+
+    * * * * * * Suggested Unit Tests * * * * * *
+assert checkCommonSubstring("hello", "world") == true;
+assert checkCommonSubstring("123", "456") == false;
+assert checkCommonSubstring("abc", "xyz") == false;</code></pre>
         <p style="margin-top: 2px; margin-bottom: 5px;">In terms of performance, the <span class="code">add()</span> and <span class="code">contains()</span> methods of HashSet generally operate in constant time, <b style="font-size: 95%;">O(1)</b>, on average. This efficiency comes from the underlying hash table implementation, which allows for direct indexing based on the hash of the elements. However, in the worst-case scenario—when too many hash collisions occur—these operations can degrade to <b style="font-size: 95%;">O(n)</b> time. This happens when multiple elements are mapped to the same hash bucket, turning the underlying data structure for that bucket into a linked list or a balanced tree, depending on the Java version. Although such cases are rare due to good hashing strategies, it is still important to be aware that the worst-case performance of both add() and contains() is O(n).</p>
         <p style="margin-top: 0px;">So, in typical situations, building the set from the first string takes <b style="font-size: 95%;">O(n)</b> time, and checking each character in the second string also takes <b style="font-size: 95%;">O(m)</b> time, leading to an average-case total time complexity of <b style="font-size: 95%;">O(n + m)</b>. But in the worst case, due to excessive collisions, the time complexity can degrade to <b style="font-size: 95%;">O(n × m)</b>. The space complexity remains <b style="font-size: 95%;">O(n)</b> since up to all characters of s1 may be stored in the set.</p>
 
